@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
-import subprocess
+import datetime
 import os
 
 class File:
@@ -9,9 +9,14 @@ class File:
         self.name = name
         self.type = type
         self.dateModified = dateModified
-        self.size = size 
+        self.size = size
+    
+    def getInfo(self):
+        return (self.name, str(self.type/1000) + " Kb", datetime.datetime.fromtimestamp(self.dateModified).strftime('%m/%d/%Y %H:%M:%S %p'), self.size)
 
 # Window setup ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+fileObjects = []
+
 wn = Tk()
 wnWidth = 500
 wnHeight = 500
@@ -23,15 +28,20 @@ def iter_files(path):
         for file in files:
             yield os.path.join(root, file)
 
-def ScanFiles():
-    print("Scanning...")
-    file_dir = os.listdir(filedialog.askdirectory())
-    x = 0
-    for i in file_dir:
-        textArea.insert(x, i)
-        print(os.stat(i))
-        x+=1
+def ScanFiles(): # scans chosen directory and appends file object with info on file
+    fileDirName = (filedialog.askdirectory())
+    print("This is filedirname " + fileDirName)
+    fileDirContents = os.listdir(fileDirName)
+
+    for i in fileDirContents:
+        fileInfo = os.stat(f"{fileDirName}/{i}")
+        fileObjects.append(File(i, fileInfo.st_mode, fileInfo.st_atime, fileInfo.st_size))
     
+    printFileObjects()
+
+def printFileObjects():
+    for i in fileObjects:
+        print(i.getInfo())
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bScanFiles = ttk.Button(text="Scan Dir", command=ScanFiles)
