@@ -1,16 +1,22 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
+import subprocess
 import os
+
+class File:
+    def __init__(self, name, type, dateModified, size):
+        self.name = name
+        self.type = type
+        self.dateModified = dateModified
+        self.size = size 
 
 # Window setup ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 wn = Tk()
-wnWidth = 900
+wnWidth = 500
 wnHeight = 500
 wn.geometry(f"{wnWidth}x{wnHeight}")
-wn.iconbitmap("file.ico")
 wn.title("FileSort 0.0.0a")
-
 # Functions ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 def iter_files(path):
     for root, dirs, files in os.walk(path):
@@ -21,8 +27,9 @@ def ScanFiles():
     print("Scanning...")
     file_dir = os.listdir(filedialog.askdirectory())
     x = 0
+    print(os.stat(file_dir[0]))
     for i in file_dir:
-        textArea.insert(x, file_dir)
+        textArea.insert(x, i)
         x+=1
     
 
@@ -40,7 +47,7 @@ bAddRule.grid(
     ipadx=10, ipady=30,
     padx=30, pady=30
 )
-textArea = ttk.Entry(width=100)
+textArea = ttk.Entry(wn,width=100)
 textArea.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=30)
 
 # Menu Bar ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -51,5 +58,5 @@ textArea.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=30)
 # menuBar.add_cascade(label="PC", menu=pcmenu)
 
 # Finalization -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#wn.resizable(False, False)
+wn.resizable(False, False)
 wn.mainloop()
