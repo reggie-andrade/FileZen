@@ -1,5 +1,8 @@
 ## Ignore testing.py
-/testing.py
+/src/testing.py
+
+## Ignore txt files
+*.txt
 
 ## Any CSV files
-/*.csv
+/src/*.csv

@@ -22,24 +22,26 @@ wnHeight = 500
 wn.geometry(f"{wnWidth}x{wnHeight}")
 wn.title("FileSort 0.0.0a")
 # Functions ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-def iter_files(path):
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            yield os.path.join(root, file)
-
 def ScanFiles(): # scans chosen directory and appends file object with info on file
     fileObjects.clear()
     fileDirName = (filedialog.askdirectory())
-    print("This is filedirname " + fileDirName)
-    fileDirContents = os.listdir(fileDirName)
     
-    for root, subdirs, files in os.walk(fileDirContents):
-        fileInfo = os.stat(f"{fileDirName}/{i}")
-        fileObjects.append(File(fileInfo, i))
-    
+    for root, subdirs, files in os.walk(fileDirName):
+        #fileInfo = os.stat(f"{fileDirName}/{i}")
+        #fileObjects.append(File(fileInfo, i))
+        if files != []: # Checks if list is empty and doesn't add it to fileObjects list
+            for file in files:
+                fileInfo = os.stat(os.path.join(root,file))
+                fileObjects.append(File(fileInfo, file))
     for i in fileObjects:
         Label(labelFrame, text=i.getInfo(), bg="red").grid()
-    
+
+def writeToLog(FileObjects):
+    """Writes to CSV File to log for later to search easy"""
+
+    with open("log.csv", "w", encoding="UTF-8") as log:
+        log.writelines((file for file in FileObjects) + ",")
+        log.writelines("\n")
 
 
 # Frames
@@ -47,9 +49,16 @@ labelFrame = Frame(wn, width=100, height=100)
 labelFrame.grid()
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bWriteFiles = ttk.Button(text="Write to log.csv", command=writeToLog)
+bWriteFiles.grid(
+    row=1, column=1,
+    ipax=10, ipady=30,
+    padx=30, pady=30
+)
+
 bScanFiles = ttk.Button(text="Scan Dir", command=ScanFiles)
 bScanFiles.grid(
-    row=1, column=1, 
+    row=2, column=1, 
     ipadx=10, ipady=30,
     padx=30, pady=30
 )
