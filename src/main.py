@@ -45,6 +45,76 @@ def writeToLog(FileObjects):
         log.writelines((file for file in FileObjects) + ",")
         log.writelines("\n")
 
+def AddSortingOption():
+    # New window setup
+    wnSortOpt = Toplevel(wn)
+    wnSortOpt.title("Add file sorting option")
+    wnSortOptWidth = 600
+    wnSortOptHeight = 350
+    wnSortOpt.geometry(f"{wnSortOptWidth}x{wnSortOptHeight}")
+
+    selectVar = StringVar()
+    selection = ttk.Combobox(wnSortOpt, width=27, state="readonly", textvariable=selectVar)
+    selectionOptions = (
+        "Sort files based on name",
+        "Sort files based on type",
+        "Sort files based on date",
+    )
+    selection['values'] = selectionOptions
+    selection.grid(column=1, row=1, padx=10, pady=10)
+
+    ifConditionVar = StringVar()
+    ifCondition = ttk.Combobox(wnSortOpt, width=27, state="disabled", textvariable=ifConditionVar)
+    ifCondition.grid(column=1, row=2, padx=10, pady=40)
+
+    conditionResultVar = StringVar()
+    conditionResult = ttk.Combobox(wnSortOpt, width=27, state="disabled", textvariable=conditionResultVar)
+    conditionResultOptions = (
+        "Move file to desktop",
+        "Move file to videos",
+        "Move file to photos",
+        "Move file to specific folder...",
+    )
+    conditionResult['values'] = conditionResultOptions
+    conditionResult.grid(column=2, row=2, padx=10, pady=40)
+
+    #TODO 1: Create an entrybox for when "Sort files based on name" is used
+    #TODO 2: Create 3 comboboxes for selecting dates, with mindfulness of days in each month
+    
+    def SelectionUpdate(self):
+        # Reset if condition selection every time a new sorting option is selected
+        ifConditionVar.set("")
+        ifCondition.set("")
+
+        selectedSortOpt = selectVar.get()
+        ifConditions1 = (
+            "If file name starts with...",
+            "If file name ends with...",
+            "If file name contains...",
+        )
+        ifConditions2 = (
+            "If file is an image...",
+            "If file is a video...",
+            "If file is a document (PDF)...",
+            "If file is of specific type...",
+        )
+        ifConditions3 = (
+            "If file was created before...",
+            "If file was created after...",
+            "If file was created on...",
+        )
+
+        # Update if condition based on selection, unlock if condition and condition result
+        conditionResult['state'] = "readonly"
+        ifCondition['state'] = "readonly"
+        if selectedSortOpt == selectionOptions[0]:
+            ifCondition['values'] = ifConditions1
+        elif selectedSortOpt == selectionOptions[1]:
+            ifCondition['values'] = ifConditions2
+        elif selectedSortOpt == selectionOptions[2]:
+            ifCondition['values'] = ifConditions3
+
+    selection.bind("<<ComboboxSelected>>", SelectionUpdate)
 
 # Frames
 labelFrame = Frame(wn, width=100, height=100)
@@ -65,8 +135,8 @@ bScanFiles.grid(
     padx=30, pady=30
 )
 
-bAddRule = ttk.Button(text = "Add Rule")
-bAddRule.grid(
+bAddSortingOption = ttk.Button(text = "Add Rule", command=AddSortingOption)
+bAddSortingOption.grid(
     row=1, column=2, 
     ipadx=10, ipady=30,
     padx=30, pady=30
