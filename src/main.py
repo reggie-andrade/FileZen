@@ -22,7 +22,9 @@ wnHeight = 500
 wn.geometry(f"{wnWidth}x{wnHeight}")
 wn.title("FileSort 0.0.0a")
 # Functions ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## TODO: Rewrite function to just write to .csv
 def ScanFiles(): # scans chosen directory and appends file object with info on file
+    """ Scans chosen directory and appends"""
     fileObjects.clear()
     fileDirName = (filedialog.askdirectory())
     
