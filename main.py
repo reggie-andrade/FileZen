@@ -5,11 +5,10 @@ import datetime
 import os
 
 class File:
-    def __init__(self, name, type, dateModified, size):
-        self.name = name
-        self.type = type
-        self.dateModified = dateModified
-        self.size = size
+    def __init__(self, fileInfo, fileName):
+        self.name = fileName
+        self.type = fileInfo.st_mode
+        self.dateModified = fileInfo.st_atime
     
     def getInfo(self):
         return ("Name: " + self.name, "Size: "+ str(self.type/10000) + " Kb", "Date Modified: " + datetime.datetime.fromtimestamp(self.dateModified).strftime('%m/%d/%Y %H:%M:%S %p'))
@@ -33,16 +32,15 @@ def ScanFiles(): # scans chosen directory and appends file object with info on f
     fileDirName = (filedialog.askdirectory())
     print("This is filedirname " + fileDirName)
     fileDirContents = os.listdir(fileDirName)
-
-    for i in fileDirContents:
-        fileInfo = os.stat(f"{fileDirName}/{i}")
-        fileObjects.append(File(i, fileInfo.st_mode, fileInfo.st_atime, fileInfo.st_size))
     
-    printFileObjects()
-
-def printFileObjects():
+    for root, subdirs, files in os.walk(fileDirContents):
+        fileInfo = os.stat(f"{fileDirName}/{i}")
+        fileObjects.append(File(fileInfo, i))
+    
     for i in fileObjects:
-        Label(labelFrame, text=i.getInfo(),bg="red").grid()
+        Label(labelFrame, text=i.getInfo(), bg="red").grid()
+    
+
 
 # Frames
 labelFrame = Frame(wn, width=100, height=100)
