@@ -40,10 +40,12 @@ def ScanFiles(): # scans chosen directory and appends file object with info on f
 
 def writeToLog(FileObjects):
     """Writes to CSV File to log for later to search easy"""
-
-    with open("log.csv", "w", encoding="UTF-8") as log:
-        log.writelines((file for file in FileObjects) + ",")
-        log.writelines("\n")
+    try:
+        with open("log.csv", "w", encoding="UTF-8") as log:
+            log.writelines((file for file in FileObjects) + ",")
+            log.writelines("\n")
+    except TypeError:
+        print("Please select a directory to write to")
 
 def AddSortingOption():
     # New window setup
@@ -121,10 +123,10 @@ labelFrame = Frame(wn, width=100, height=100)
 labelFrame.grid()
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bWriteFiles = ttk.Button(text="Write to log.csv", command=writeToLog)
+bWriteFiles = ttk.Button(text="Write to log.csv", command=writeToLog) 
 bWriteFiles.grid(
     row=1, column=1,
-    ipax=10, ipady=30,
+    ipadx=10, ipady=30,
     padx=30, pady=30
 )
 
