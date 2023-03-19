@@ -15,18 +15,21 @@ class File:
     def getInfo(self):
         return ("Name: " + self.name, "Size: "+ str(self.type/10000) + " Kb", "Date Modified: " + datetime.datetime.fromtimestamp(self.dateModified).strftime('%m/%d/%Y %H:%M:%S %p'))
 
-# Window setup ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 fileObjects = []
+# Window setup ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+wnWidth = 850 
+wnHeight = 850 
+
 
 wn = Tk()
-wnWidth = 500
-wnHeight = 500
 wn.geometry(f"{wnWidth}x{wnHeight}")
 wn.title("FileSort 0.0.0a")
 # Functions ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## TODO: Rewrite function to just write to .csv
 def ScanFiles(): # scans chosen directory and appends file object with info on file
     """ Scans chosen directory and appends"""
+    if text["state"] == "disabled":
+        text.configure(state="normal")
     fileObjects.clear()
     fileDirName = (filedialog.askdirectory())
     
@@ -37,17 +40,18 @@ def ScanFiles(): # scans chosen directory and appends file object with info on f
             for file in files:
                 fileInfo = os.stat(os.path.join(root,file))
                 fileObjects.append(File(fileInfo, file))
-    for i in fileObjects:
-        Label(labelFrame, text=i.getInfo(), bg="red").grid()
+    for files in fileObjects:
+        text.insert(END, f"{files.getInfo()}\n")
+    
+    text.configure(state="disabled")
 
 def writeToLog(FileObjects):
     """Writes to CSV File to log for later to search easy"""
-    try:
-        with open("log.csv", "w", encoding="UTF-8") as log:
-            log.writelines((file for file in FileObjects) + ",")
-            log.writelines("\n")
-    except TypeError:
-        print("Please select a directory to write to")
+    with open("log.csv", "w", encoding="UTF-8") as log:
+       # log.writelines((file for file in FileObjects) + ",")
+       for files in FileObjects:
+            log.writelines(str(files.getInfo()) + ",\n")
+        
 
 def addSortingOption():
     # New window setup
@@ -154,7 +158,7 @@ labelFrame = Frame(wn, width=100, height=100)
 labelFrame.grid()
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bWriteFiles = ttk.Button(text="Write to log.csv", command=writeToLog) 
+bWriteFiles = ttk.Button(text="Write to log.csv", command=lambda:writeToLog(fileObjects)) 
 bWriteFiles.grid(
     row=1, column=1,
     ipadx=10, ipady=30,
@@ -168,14 +172,18 @@ bScanFiles.grid(
     padx=30, pady=30
 )
 
-bAddSortingOption = ttk.Button(text = "Add Rule", command=AddSortingOption)
+bAddSortingOption = ttk.Button(text = "Add Rule", command=addSortingOption)
 bAddSortingOption.grid(
     row=1, column=2, 
     ipadx=10, ipady=30,
     padx=30, pady=30
 )
-textArea = ttk.Entry(wn,width=100)
-textArea.grid(row=1, column=3, ipadx=10, ipady=10, padx=30, pady=30)
+
+entryBoxScrollbar = Scrollbar(labelFrame)
+entryBoxScrollbar.pack(side=RIGHT, fill=Y)
+
+text = Text(labelFrame, yscrollcommand=entryBoxScrollbar.set)
+text.pack(side=LEFT, fill=BOTH, expand=True)
 
 # Menu Bar ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # menuBar = Menu(wn)
