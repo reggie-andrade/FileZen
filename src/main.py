@@ -49,7 +49,54 @@ def writeToLog(FileObjects):
     except TypeError:
         print("Please select a directory to write to")
 
-def ifSelectionUpdate(self):
+def addSortingOption():
+    # New window setup
+    wnSortOpt = Toplevel(wn)
+    wnSortOpt.title("Add file sorting option")
+    wnSortOptWidth = 850
+    wnSortOptHeight = 350
+    wnSortOpt.geometry(f"{wnSortOptWidth}x{wnSortOptHeight}")
+
+    selectVar = StringVar()
+    selection = ttk.Combobox(wnSortOpt, width=27, state="readonly", textvariable=selectVar)
+    selectionOptions = (
+        "Sort files based on name",
+        "Sort files based on type",
+        "Sort files based on date",
+    )
+    selection['values'] = selectionOptions
+    selection.grid(column=1, row=1, padx=10, pady=10)
+
+    ifConditionVar = StringVar()
+    ifCondition = ttk.Combobox(wnSortOpt, width=27, state="disabled", textvariable=ifConditionVar)
+    ifCondition.grid(column=1, row=2, padx=10, pady=40)
+
+    conditionResultVar = StringVar()
+    conditionResult = ttk.Combobox(wnSortOpt, width=27, state="disabled", textvariable=conditionResultVar)
+    conditionResultOptions = (
+        "Move file to desktop",
+        "Move file to videos",
+        "Move file to photos",
+        "Move file to specific folder...",
+        "Move file to recycling bin"
+    )
+    conditionResult['values'] = conditionResultOptions
+    conditionResult.grid(column=2, row=2, padx=10, pady=40)
+
+    ifEntryVar = StringVar()
+    ifConditionEntry = ttk.Entry(wnSortOpt, width=17)
+
+    def selectSpecificDir():
+        selectedFolder = filedialog.askdirectory()
+
+    dirSelect = ttk.Button(wnSortOpt, text="Select Folder", command=selectSpecificDir)
+    dirEntry = ttk.Entry(wnSortOpt, width=25, state="readonly")
+
+    # 3 comboboxes for selecting dates, with mindfulness of days in each month
+    todaysDate = date.today()
+    cal = Calendar(wnSortOpt, selectmode="day", year=todaysDate.year, month=todaysDate.month, day=todaysDate.day)
+    
+    def ifSelectionUpdate(self):
         # Reset widgets
         ifConditionVar.set("")
         ifCondition.set("")
@@ -101,7 +148,7 @@ def ifSelectionUpdate(self):
 
     selection.bind("<<ComboboxSelected>>", ifSelectionUpdate)
     wnSortOpt.resizable(False, False)
-
+    
 # Frames
 labelFrame = Frame(wn, width=100, height=100)
 labelFrame.grid()
