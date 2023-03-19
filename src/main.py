@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
+from tkcalendar import Calendar
+from datetime import date
 import datetime
 import os
 
@@ -47,47 +49,24 @@ def writeToLog(FileObjects):
     except TypeError:
         print("Please select a directory to write to")
 
-def AddSortingOption():
-    # New window setup
-    wnSortOpt = Toplevel(wn)
-    wnSortOpt.title("Add file sorting option")
-    wnSortOptWidth = 600
-    wnSortOptHeight = 350
-    wnSortOpt.geometry(f"{wnSortOptWidth}x{wnSortOptHeight}")
-
-    selectVar = StringVar()
-    selection = ttk.Combobox(wnSortOpt, width=27, state="readonly", textvariable=selectVar)
-    selectionOptions = (
-        "Sort files based on name",
-        "Sort files based on type",
-        "Sort files based on date",
-    )
-    selection['values'] = selectionOptions
-    selection.grid(column=1, row=1, padx=10, pady=10)
-
-    ifConditionVar = StringVar()
-    ifCondition = ttk.Combobox(wnSortOpt, width=27, state="disabled", textvariable=ifConditionVar)
-    ifCondition.grid(column=1, row=2, padx=10, pady=40)
-
-    conditionResultVar = StringVar()
-    conditionResult = ttk.Combobox(wnSortOpt, width=27, state="disabled", textvariable=conditionResultVar)
-    conditionResultOptions = (
-        "Move file to desktop",
-        "Move file to videos",
-        "Move file to photos",
-        "Move file to specific folder...",
-    )
-    conditionResult['values'] = conditionResultOptions
-    conditionResult.grid(column=2, row=2, padx=10, pady=40)
-
-    #TODO 1: Create an entrybox for when "Sort files based on name" is used
-    #TODO 2: Create 3 comboboxes for selecting dates, with mindfulness of days in each month
-    
-    def SelectionUpdate(self):
-        # Reset if condition selection every time a new sorting option is selected
+def ifSelectionUpdate(self):
+        # Reset widgets
         ifConditionVar.set("")
         ifCondition.set("")
 
+        conditionResultVar.set("")
+        conditionResult.set("")
+
+        ifEntryVar.set("")
+        ifConditionEntry.delete(0, END)
+        ifConditionEntry.grid_forget()
+
+        cal.grid_forget()
+        cal.selection_set(todaysDate)
+
+        conditionResult.grid(column=2, row=2, padx=10, pady=40)
+
+        # Get if statement selection, change if statement
         selectedSortOpt = selectVar.get()
         ifConditions1 = (
             "If file name starts with...",
@@ -111,12 +90,17 @@ def AddSortingOption():
         ifCondition['state'] = "readonly"
         if selectedSortOpt == selectionOptions[0]:
             ifCondition['values'] = ifConditions1
+            ifConditionEntry.grid(column=2, row=2, padx=10, pady=40)
+            conditionResult.grid(column=3, row=2, padx=10, pady=40)
         elif selectedSortOpt == selectionOptions[1]:
             ifCondition['values'] = ifConditions2
         elif selectedSortOpt == selectionOptions[2]:
             ifCondition['values'] = ifConditions3
+            cal.grid(column=2, row=2, padx=10, pady=40)
+            conditionResult.grid(column=3, row=2, padx=10, pady=40)
 
-    selection.bind("<<ComboboxSelected>>", SelectionUpdate)
+    selection.bind("<<ComboboxSelected>>", ifSelectionUpdate)
+    wnSortOpt.resizable(False, False)
 
 # Frames
 labelFrame = Frame(wn, width=100, height=100)
