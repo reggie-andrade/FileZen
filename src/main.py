@@ -1,3 +1,5 @@
+import SortingOptions
+import ScanFile
 from tkinter import *
 from tkinter import filedialog
 from tkinter import ttk
