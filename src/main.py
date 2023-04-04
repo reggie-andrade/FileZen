@@ -61,7 +61,7 @@ bScanFiles.grid(
     padx=30, pady=30
 )
 
-bAddSortingOption = ttk.Button(text = "Add Rule", command=addSortingOption)
+bAddSortingOption = ttk.Button(text = "Add Rule", command=addSortOpt)
 bAddSortingOption.grid(
     row=1, column=2, 
     ipadx=10, ipady=30,
