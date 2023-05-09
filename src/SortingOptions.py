@@ -4,12 +4,29 @@ from tkinter import ttk
 from tkcalendar import Calendar
 from datetime import date
 
+class SortingRule:
+    def __init__(self, sortingOption, ifcondition, ext, date, result, directory):
+        self.count = 0
+        self.sortingOption = sortingOption
+        self.ifcondition = ifcondition
+        self.extension = ext
+        self.date = date
+        self.result = result
+        self.directory = directory
+    
+    def __str__(self):
+        return (
+            f"SORTINGRULE {self.count}\n sortingOption: {self.sortingOption}\n ifcondition: {self.ifcondition}\n extension: {self.extension}\n date: {self.date}\n result: {self.result}\n directory: {self.directory}"
+        )
+        
+
 def addSortingOption(toplevel):
     # Setup ------------------------------------------------------------------------------------------------------------
+    rule = None
 
     # New window setup
     wnSortOpt = Toplevel(toplevel)
-    wnSortOpt.title("Add file sorting option")
+    wnSortOpt.title("Add file sorting rule")
     wnSortOptWidth = 1100
     wnSortOptHeight = 450
     wnSortOpt.geometry(f"{wnSortOptWidth}x{wnSortOptHeight}")
@@ -17,6 +34,7 @@ def addSortingOption(toplevel):
     # Functions ------------------------------------------------------------------------------------------------------------
 
     # Function to update if condition dropdown based on primary selection dropdown
+    
     def ifSelectionUpdate(self):
         ifConditions1 = (
             "If file name starts with...",
@@ -114,6 +132,27 @@ def addSortingOption(toplevel):
         dirSelectVar.set(selectedFolder)
         wnSortOpt.lift()
 
+    def createSortRule():
+        rule = SortingRule(
+            selectVar.get(),
+            ifConditionVar.get(),
+            ifEntryVar.get(),
+            cal.get_date(),
+            conditionResultVar.get(),
+            dirSelectVar.get()
+        )
+        print("rule created")
+
+        print("Object -> sortingOption: " + rule.sortingOption)
+        print("Object -> ifcondition: " + rule.ifcondition)
+        print("Object -> extension: " + rule.extension)
+        print("Object -> date: " + rule.date)
+        print("Object -> result: " + rule.result)
+        print("Object -> directory: " + rule.directory)
+
+        wnSortOpt.destroy()
+
+
     # Widgets ------------------------------------------------------------------------------------------------------------
 
     # Primary selection dropdown for file sorting
@@ -157,6 +196,11 @@ def addSortingOption(toplevel):
     # Visual calandar used for if primary selection is "Sort files based on date"
     todaysDate = date.today()
     cal = Calendar(wnSortOpt, selectmode="day", year=todaysDate.year, month=todaysDate.month, day=todaysDate.day)
+
+    # Submit button
+    submit = ttk.Button(wnSortOpt, command=createSortRule)
+    submit.configure(text="Submit")
+    submit.grid(column=1, row=3, padx=10, pady=10)
 
     # Bindings
     selection.bind("<<ComboboxSelected>>", ifSelectionUpdate)
