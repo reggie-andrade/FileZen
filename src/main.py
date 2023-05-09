@@ -1,23 +1,25 @@
-import SortingOptions
+import SortingRules
 import ScanFile
 from tkinter import *
 from tkinter import ttk
 
 fileObjects = []
+rules = []
+ruleCount = 0
 
 # Window setup ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-wnWidth = 850 
-wnHeight = 850 
+wnWidth = 1000
+wnHeight = 500
 wn = Tk()
 wn.geometry(f"{wnWidth}x{wnHeight}")
-wn.title("FileSort 0.0.0a")
+wn.title("FileSort 0.3.1a")
 
 # Functions ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## TODO: Rewrite function to just write to .csv
 def ScanFiles(): # scans chosen directory and appends file object with info on file
-    ScanFile.ScanFiles(fileObjects, text)
+    ScanFile.ScanFiles(fileObjects)
 
 def writeToLog(FileObjects):
     """Writes to CSV File to log for later to search easy"""
@@ -26,13 +28,18 @@ def writeToLog(FileObjects):
             log.writelines(str(files.getInfo()) + ",\n")
         
 # Adds a sorting option which the user can use to dictate how their directory of choice will be organized
+
 def addSortOpt():
-    SortingOptions.addSortingOption(wn)
+    r = SortingRules.addSortingOption(wn)
+    
+    rules.append(r)
+
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-labelFrame = Frame(wn, width=100, height=100)
-labelFrame.grid()
+# currently hiding debug print
+# labelFrame = Frame(wn, width=100, height=100)
+# labelFrame.grid()
 
 bWriteFiles = ttk.Button(text="Write to log.csv", command=lambda:writeToLog(fileObjects)) 
 bWriteFiles.grid(
@@ -55,11 +62,11 @@ bAddSortingOption.grid(
     padx=30, pady=30
 )
 
-entryBoxScrollbar = Scrollbar(labelFrame)
-entryBoxScrollbar.pack(side=RIGHT, fill=Y)
+# entryBoxScrollbar = Scrollbar(labelFrame)
+# entryBoxScrollbar.pack(side=RIGHT, fill=Y)
 
-text = Text(labelFrame, yscrollcommand=entryBoxScrollbar.set)
-text.pack(side=LEFT, fill=BOTH, expand=True)
+# text = Text(labelFrame, yscrollcommand=entryBoxScrollbar.set)
+# text.pack(side=LEFT, fill=BOTH, expand=True)
 
 # Window -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
