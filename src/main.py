@@ -2,10 +2,10 @@ import SortingRules
 import ScanFile
 from tkinter import *
 from tkinter import ttk
+from SortingRules import SortingRule
 
 fileObjects = []
 rules = []
-ruleCount = 0
 
 # Window setup ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -29,10 +29,14 @@ def writeToLog(FileObjects):
         
 # Adds a sorting option which the user can use to dictate how their directory of choice will be organized
 
+ruleCount = 0
 def addSortOpt():
+    global ruleCount
     r = SortingRules.addSortingOption(wn)
-    
+    r.count = ruleCount
+    ruleCount += 1
     rules.append(r)
+    print(r)
 
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
