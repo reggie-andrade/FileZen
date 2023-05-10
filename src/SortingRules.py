@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkcalendar import Calendar
 from datetime import date
 
+# TODO: Add 'ignore files based on...'
 class SortingRule:
     def __init__(self, sortingOption, ifcondition, ext, date, result, directory):
         self.count = 0
@@ -14,10 +15,14 @@ class SortingRule:
         self.result = result
         self.directory = directory
     
+    # Check if the passed file matches criteria of rule
+    # def DoesFileMatch(self, file):
+
     def __str__(self):
         return (
             f"SORTINGRULE {self.count}\n sortingOption: {self.sortingOption}\n ifcondition: {self.ifcondition}\n extension: {self.extension}\n date: {self.date}\n result: {self.result}\n directory: {self.directory}"
         )
+        
         
 
 def addSortingOption(toplevel):
@@ -132,25 +137,25 @@ def addSortingOption(toplevel):
         dirSelectVar.set(selectedFolder)
         wnSortOpt.lift()
 
-    def createSortRule():
-        rule = SortingRule(
-            selectVar.get(),
-            ifConditionVar.get(),
-            ifEntryVar.get(),
-            cal.get_date(),
-            conditionResultVar.get(),
-            dirSelectVar.get()
-        )
-        print("rule created")
+    # def createSortRule():
+    #     rule = SortingRule(
+    #         selectVar.get(),
+    #         ifConditionVar.get(),
+    #         ifEntryVar.get(),
+    #         cal.get_date(),
+    #         conditionResultVar.get(),
+    #         dirSelectVar.get()
+    #     )
+    #     print("rule created")
 
-        print("Object -> sortingOption: " + rule.sortingOption)
-        print("Object -> ifcondition: " + rule.ifcondition)
-        print("Object -> extension: " + rule.extension)
-        print("Object -> date: " + rule.date)
-        print("Object -> result: " + rule.result)
-        print("Object -> directory: " + rule.directory)
+    #     print("Object -> sortingOption: " + rule.sortingOption)
+    #     print("Object -> ifcondition: " + rule.ifcondition)
+    #     print("Object -> extension: " + rule.extension)
+    #     print("Object -> date: " + rule.date)
+    #     print("Object -> result: " + rule.result)
+    #     print("Object -> directory: " + rule.directory)
 
-        wnSortOpt.destroy()
+    #     wnSortOpt.destroy()
 
 
     # Widgets ------------------------------------------------------------------------------------------------------------
@@ -198,7 +203,8 @@ def addSortingOption(toplevel):
     cal = Calendar(wnSortOpt, selectmode="day", year=todaysDate.year, month=todaysDate.month, day=todaysDate.day)
 
     # Submit button
-    submit = ttk.Button(wnSortOpt, command=createSortRule)
+    submitVar = IntVar()
+    submit = ttk.Button(wnSortOpt, command=lambda: submitVar.set(1))
     submit.configure(text="Submit")
     submit.grid(column=1, row=3, padx=10, pady=10)
 
@@ -209,3 +215,17 @@ def addSortingOption(toplevel):
 
     # Finalization
     wnSortOpt.resizable(False, False)
+
+    submit.wait_variable(submitVar)
+
+    rule = SortingRule(
+        selectVar.get(),
+        ifConditionVar.get(),
+        ifEntryVar.get(),
+        cal.get_date(),
+        conditionResultVar.get(),
+        dirSelectVar.get()
+    )
+
+    wnSortOpt.destroy()
+    return rule
