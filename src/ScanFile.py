@@ -37,5 +37,4 @@ def ScanFiles(fileObjs):
     fileDir = (filedialog.askdirectory())
     fileObjs = os.listdir(fileDir)
 
-    for file in fileObjs:
-         print(file)
+    return fileObjs
