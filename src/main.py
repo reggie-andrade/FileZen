@@ -1,5 +1,6 @@
 import SortingRules
 import ScanFile
+import Sort
 from tkinter import *
 from tkinter import ttk
 from SortingRules import SortingRule
@@ -19,7 +20,8 @@ wn.title("FileSort 0.3.1a")
 
 ## TODO: Rewrite function to just write to .csv
 def ScanFiles(): # scans chosen directory and appends file object with info on file
-    ScanFile.ScanFiles(fileObjects)
+    global fileObjects
+    fileObjects = ScanFile.ScanFiles(fileObjects)
 
 def writeToLog(FileObjects):
     """Writes to CSV File to log for later to search easy"""
@@ -28,7 +30,6 @@ def writeToLog(FileObjects):
             log.writelines(str(files.getInfo()) + ",\n")
         
 # Adds a sorting option which the user can use to dictate how their directory of choice will be organized
-
 ruleCount = 0
 def addSortOpt():
     global ruleCount
@@ -38,6 +39,19 @@ def addSortOpt():
     rules.append(r)
     print(r)
 
+# Runs the Sort module to sort files
+def SortFiles(ruleList, fileList):
+    print("ran SortFiles")
+
+    print("Files:")
+    for file in fileList:
+        print(file)
+    
+    print("Rules:")
+    for rule in ruleList:
+        print(rule)
+    
+    Sort.SortToDesktop(ruleList, fileList)
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -62,6 +76,13 @@ bScanFiles.grid(
 bAddSortingOption = ttk.Button(text = "Add Rule", command=addSortOpt)
 bAddSortingOption.grid(
     row=1, column=2, 
+    ipadx=10, ipady=30,
+    padx=30, pady=30
+)
+
+bSort = ttk.Button(text="Sort!", command=lambda:SortFiles(rules, fileObjects))
+bSort.grid(
+    row=3, column=1,
     ipadx=10, ipady=30,
     padx=30, pady=30
 )
