@@ -3,20 +3,71 @@ from tkinter import filedialog
 from tkinter import ttk
 from tkcalendar import Calendar
 from datetime import date
+from PIL import Image
 
 # TODO: Add 'ignore files based on...'
 class SortingRule:
     def __init__(self, sortingOption, ifcondition, ext, date, result, directory):
+        # Setup step variables
         self.count = 0
+        # Checking step variables
         self.sortingOption = sortingOption
         self.ifcondition = ifcondition
         self.extension = ext
         self.date = date
+        # Final step variables
         self.result = result
         self.directory = directory
     
     # Check if the passed file matches criteria of rule
-    # def DoesFileMatch(self, file):
+    def DoesFileMatch(self, file):
+        match = False
+
+        baseOptions = (
+            "Sort files based on name",
+            "Sort files based on type",
+            "Sort files based on date",
+        )
+
+        if self.sortingOption == baseOptions[0]:
+            print("Sorting based on name")
+            ifConditions = (
+                "If file name starts with...",
+                "If file name ends with...",
+                "If file name contains...",
+            )
+
+            if self.ifcondition == ifConditions[0]:
+                if file.name.startswith(self.extension):
+                    match = True
+            elif self.ifcondition == ifConditions[1]:
+                if file.name[:-4].endswith(self.extension):
+                    match = True
+            elif self.ifcondition == ifConditions[2]:
+                if self.extension in file.name:
+                    match = True
+        elif self.sortingOption == baseOptions[1]:
+            print("Sorting based on type")
+            ifConditions = (
+                "If file is an image...",
+                "If file is a video...",
+                "If file is a document (PDF)...",
+                "If file is of specific type...",
+            )
+
+            # if self.ifcondition == ifConditions[0]:
+            #     if file.name.startswith(self.extension):
+            #         match = True
+            # elif self.ifcondition == ifConditions[1]:
+                
+            # elif self.ifcondition == ifConditions[2]:
+            #     if file.name.endswith("pdf"):
+            #         match = True
+            # elif self.ifcondition == ifConditions[3]:
+            #     if file.name.endswith(self.extension):
+            #         match = True
+        elif self.sortingOption == baseOptions[2]:
+            print("Sorting based on date")
 
     def __str__(self):
         return (
@@ -136,27 +187,6 @@ def addSortingOption(toplevel):
         selectedFolder = filedialog.askdirectory()
         dirSelectVar.set(selectedFolder)
         wnSortOpt.lift()
-
-    # def createSortRule():
-    #     rule = SortingRule(
-    #         selectVar.get(),
-    #         ifConditionVar.get(),
-    #         ifEntryVar.get(),
-    #         cal.get_date(),
-    #         conditionResultVar.get(),
-    #         dirSelectVar.get()
-    #     )
-    #     print("rule created")
-
-    #     print("Object -> sortingOption: " + rule.sortingOption)
-    #     print("Object -> ifcondition: " + rule.ifcondition)
-    #     print("Object -> extension: " + rule.extension)
-    #     print("Object -> date: " + rule.date)
-    #     print("Object -> result: " + rule.result)
-    #     print("Object -> directory: " + rule.directory)
-
-    #     wnSortOpt.destroy()
-
 
     # Widgets ------------------------------------------------------------------------------------------------------------
 
