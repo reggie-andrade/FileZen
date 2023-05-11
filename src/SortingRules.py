@@ -3,7 +3,7 @@ from tkinter import filedialog
 from tkinter import ttk
 from tkcalendar import Calendar
 from datetime import date
-from PIL import Image
+import Sort
 
 # TODO: Add 'ignore files based on...'
 class SortingRule:
@@ -13,14 +13,14 @@ class SortingRule:
         # Checking step variables
         self.sortingOption = sortingOption
         self.ifcondition = ifcondition
-        self.extension = ext
+        self.entry = ext
         self.date = date
         # Final step variables
         self.result = result
         self.directory = directory
     
     # Check if the passed file matches criteria of rule
-    def DoesFileMatch(self, file):
+    def DoesFileMatch(self, fileName):
         match = False
 
         baseOptions = (
@@ -30,7 +30,6 @@ class SortingRule:
         )
 
         if self.sortingOption == baseOptions[0]:
-            print("Sorting based on name")
             ifConditions = (
                 "If file name starts with...",
                 "If file name ends with...",
@@ -38,16 +37,15 @@ class SortingRule:
             )
 
             if self.ifcondition == ifConditions[0]:
-                if file.name.startswith(self.extension):
+                if fileName.startswith(self.entry):
                     match = True
             elif self.ifcondition == ifConditions[1]:
-                if file.name[:-4].endswith(self.extension):
+                if Sort.stripExtension(fileName).endswith(self.entry):
                     match = True
             elif self.ifcondition == ifConditions[2]:
-                if self.extension in file.name:
+                if self.entry in fileName:
                     match = True
         elif self.sortingOption == baseOptions[1]:
-            print("Sorting based on type")
             ifConditions = (
                 "If file is an image...",
                 "If file is a video...",
@@ -55,23 +53,25 @@ class SortingRule:
                 "If file is of specific type...",
             )
 
-            # if self.ifcondition == ifConditions[0]:
-            #     if file.name.startswith(self.extension):
-            #         match = True
-            # elif self.ifcondition == ifConditions[1]:
-                
-            # elif self.ifcondition == ifConditions[2]:
-            #     if file.name.endswith("pdf"):
-            #         match = True
-            # elif self.ifcondition == ifConditions[3]:
-            #     if file.name.endswith(self.extension):
-            #         match = True
+            if self.ifcondition == ifConditions[0]:
+                if Sort.isImage(fileName):
+                    match = True
+            elif self.ifcondition == ifConditions[1]:
+                if Sort.isVideo(fileName):
+                    match = True
+            elif self.ifcondition == ifConditions[2]:
+                if Sort.isExtension(fileName, "pdf"):
+                    match = True
+            elif self.ifcondition == ifConditions[3]:
+                if Sort.isExtension(fileName, self.entry):
+                    match = True
         elif self.sortingOption == baseOptions[2]:
             print("Sorting based on date")
+        return match
 
     def __str__(self):
         return (
-            f"SORTINGRULE {self.count}\n sortingOption: {self.sortingOption}\n ifcondition: {self.ifcondition}\n extension: {self.extension}\n date: {self.date}\n result: {self.result}\n directory: {self.directory}"
+            f"SORTINGRULE {self.count}\n sortingOption: {self.sortingOption}\n ifcondition: {self.ifcondition}\n entry: {self.entry}\n date: {self.date}\n result: {self.result}\n directory: {self.directory}"
         )
         
         
