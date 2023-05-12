@@ -1,8 +1,8 @@
 import SortingRules
 import ScanFile
 import Sort
-from tkinter import *
-from tkinter import ttk
+import tkinter
+import customtkinter as cstk
 from SortingRules import SortingRule
 
 fileObjects = []
@@ -10,29 +10,26 @@ rules = []
 
 # Window setup ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-wnWidth = 1000
-wnHeight = 500
-wn = Tk()
+cstk.set_appearance_mode("dark") 
+cstk.set_default_color_theme("C:/Users/Karat/OneDrive/Desktop/FileSort/FileSort-main/src/theme.json")
+
+wnWidth = 530
+wnHeight = 280
+wn = cstk.CTk()
 wn.geometry(f"{wnWidth}x{wnHeight}")
-wn.title("FileSort 0.3.1a")
+wn.title("FileSort 1.0.0")
 
 # Functions ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## TODO: Rewrite function to just write to .csv
-def ScanFiles(): # scans chosen directory and appends file object with info on file
+def ScanFiles():
     global fileObjects
     fileObjects = ScanFile.ScanFiles(fileObjects)
-
-def writeToLog(FileObjects):
-    """Writes to CSV File to log for later to search easy"""
-    with open("log.csv", "w", encoding="UTF-8") as log:
-       for files in FileObjects:
-            log.writelines(str(files.getInfo()) + ",\n")
         
 # Adds a sorting option which the user can use to dictate how their directory of choice will be organized
 ruleCount = 0
 def addSortOpt():
     global ruleCount
+    wn.lower()
     r = SortingRules.addSortingOption(wn)
     r.count = ruleCount
     ruleCount += 1
@@ -41,8 +38,6 @@ def addSortOpt():
 
 # Runs the Sort module to sort files
 def SortFiles(ruleList, fileList):
-    print("ran SortFiles")
-
     print("Files:")
     for file in fileList:
         print(file)
@@ -51,47 +46,44 @@ def SortFiles(ruleList, fileList):
     for rule in ruleList:
         print(rule)
     
-    Sort.SortToDesktop(ruleList, fileList)
+    Sort.SortToDirectory(ruleList, fileList)
 
 # Widgets -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# currently hiding debug print
-# labelFrame = Frame(wn, width=100, height=100)
-# labelFrame.grid()
-
-bWriteFiles = ttk.Button(text="Write to log.csv", command=lambda:writeToLog(fileObjects)) 
-bWriteFiles.grid(
-    row=1, column=1,
-    ipadx=10, ipady=30,
-    padx=30, pady=30
-)
-
-bScanFiles = ttk.Button(text="Scan Dir", command=ScanFiles)
+bScanFiles = cstk.CTkButton(master=wn, text="Select Folder", command=ScanFiles)
 bScanFiles.grid(
-    row=2, column=1, 
-    ipadx=10, ipady=30,
+    row=1, column=1, 
+    ipadx=10, ipady=10,
     padx=30, pady=30
 )
 
-bAddSortingOption = ttk.Button(text = "Add Rule", command=addSortOpt)
-bAddSortingOption.grid(
+txtScanFiles = cstk.CTkLabel(master=wn, text="1. Select the folder you'd like to auto-sort", fg_color="transparent", justify="left")
+txtScanFiles.grid(
     row=1, column=2, 
-    ipadx=10, ipady=30,
-    padx=30, pady=30
 )
 
-bSort = ttk.Button(text="Sort!", command=lambda:SortFiles(rules, fileObjects))
+bAddSortingOption = cstk.CTkButton(master=wn, text = "Add Rule", command=addSortOpt)
+bAddSortingOption.grid(
+    row=2, column=1, 
+    ipadx=10, ipady=10,
+)
+
+txtSortingOption = cstk.CTkLabel(master=wn, text="2. Add as many rules as you need to sort the folder", fg_color="transparent", justify="left")
+txtSortingOption.grid(
+    row=2, column=2, 
+)
+
+bSort = cstk.CTkButton(master=wn, text="Sort!", command=lambda:SortFiles(rules, fileObjects))
 bSort.grid(
     row=3, column=1,
-    ipadx=10, ipady=30,
+    ipadx=10, ipady=10,
     padx=30, pady=30
 )
 
-# entryBoxScrollbar = Scrollbar(labelFrame)
-# entryBoxScrollbar.pack(side=RIGHT, fill=Y)
-
-# text = Text(labelFrame, yscrollcommand=entryBoxScrollbar.set)
-# text.pack(side=LEFT, fill=BOTH, expand=True)
+txtSort = cstk.CTkLabel(master=wn, text="3. Sort your files!", fg_color="transparent", justify="left")
+txtSort.grid(
+    row=3, column=2, 
+)
 
 # Window -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
