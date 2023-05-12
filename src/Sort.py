@@ -1,5 +1,7 @@
 import os
 import SortingRules
+import ScanFile
+from send2trash import send2trash
 
 def stripExtension(fileName):
     splitfileName = fileName.split(".")
@@ -38,8 +40,36 @@ def isExtension(fileName, ext):
     else:
         return False
 
-def SortToDesktop(ruleList, fileList):
-    print("ran SortToDesktop")
+def SortToDirectory(ruleList, fileList):
     for file in fileList:
         for rule in ruleList:
-            print(str(rule.DoesFileMatch(file)) + ": " + file)
+            resultOptions = (
+                "Move file to desktop",
+                "Move file to videos",
+                "Move file to photos",
+                "Move file to specific folder...",
+                "Move file to recycling bin"
+            )
+
+            lastDir = ScanFile.GetLastDirectory()
+            fileMatches = rule.DoesFileMatch(file, lastDir)
+            result = rule.GetResult()
+
+            print(str(fileMatches) + ": " + file)
+
+            if fileMatches:
+                if result == resultOptions[0]:
+                    desktop = os.path.expanduser("~/Desktop").replace("\\", "/")
+                    os.rename(lastDir + "/" + file, desktop + "/" + file)
+                elif result == resultOptions[1]:
+                    videos = os.path.expanduser("~/Videos").replace("\\", "/")
+                    os.rename(lastDir + "/" + file, videos + "/" + file)
+                elif result == resultOptions[2]:
+                    photos = os.path.expanduser("~/Pictures").replace("\\", "/")
+                    os.rename(lastDir + "/" + file, photos + "/" + file)
+                elif result == resultOptions[3]:
+                    os.rename(lastDir + "/" + file, rule.GetTargetDir() + "/" + file)
+                elif result == resultOptions[4]:
+                    path_to_delete = lastDir + "/" + file
+                    path_to_delete = path_to_delete.replace("/", "\\")
+                    send2trash(path_to_delete)
